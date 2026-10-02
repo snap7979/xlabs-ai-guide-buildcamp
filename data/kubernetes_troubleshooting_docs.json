@@ -1,0 +1,32 @@
+[
+  {
+    "doc_id": "debug-running-pods",
+    "category": "Pods and containers",
+    "title": "Debugging Running Pods",
+    "symptoms": "A Pod exists but its application is unhealthy, a container is restarting, or the cause of a failure is unclear.",
+    "guidance": "Inspect Pod status and recent events with kubectl describe pod. Read the container logs with kubectl logs; use --previous to inspect the last terminated container. For Pods with multiple containers, specify the container with -c. When logs are insufficient, use kubectl exec to inspect a running container if the image and permissions allow it.",
+    "commands": "kubectl describe pod POD_NAME\nkubectl logs POD_NAME\nkubectl logs POD_NAME --previous\nkubectl logs POD_NAME -c CONTAINER_NAME\nkubectl exec -it POD_NAME -- sh",
+    "source_title": "Debugging Running Pods",
+    "source_url": "https://kubernetes.io/docs/tasks/debug/debug-application/debug-running-pod/"
+  },
+  {
+    "doc_id": "debug-services",
+    "category": "Services and networking",
+    "title": "Debugging Services",
+    "symptoms": "A Service is created, but clients cannot reach the application through the Service address.",
+    "guidance": "Check that the Service selector matches the labels on the intended Pods and that the Service has endpoints. Compare the Service port and targetPort with the application port. Test connectivity from inside the cluster and compare access through the Service with access to a Pod IP to narrow down whether the issue is in the Service path.",
+    "commands": "kubectl describe service SERVICE_NAME\nkubectl get pods --show-labels\nkubectl get endpoints SERVICE_NAME\nkubectl get pods -o wide",
+    "source_title": "Debugging Services",
+    "source_url": "https://kubernetes.io/docs/tasks/debug/debug-application/debug-service/"
+  },
+  {
+    "doc_id": "dns-services-pods",
+    "category": "DNS and service discovery",
+    "title": "DNS for Services and Pods",
+    "symptoms": "A workload can reach an application by IP address but cannot resolve its Service name, or in-cluster DNS lookups fail.",
+    "guidance": "Test name resolution from a Pod using a DNS lookup tool and inspect the Pod's /etc/resolv.conf. A Service DNS name can include the Service name, namespace, svc, and cluster domain, such as SERVICE.NAMESPACE.svc.cluster.local. If lookups fail, inspect the cluster DNS Pods and their logs; also verify that the target Service has endpoints.",
+    "commands": "kubectl exec -it POD_NAME -- nslookup SERVICE_NAME.NAMESPACE\nkubectl exec -it POD_NAME -- cat /etc/resolv.conf\nkubectl get pods -n kube-system -l k8s-app=kube-dns\nkubectl logs -n kube-system POD_NAME",
+    "source_title": "DNS for Services and Pods",
+    "source_url": "https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/"
+  }
+]
