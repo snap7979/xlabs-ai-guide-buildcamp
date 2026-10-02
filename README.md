@@ -1,14 +1,14 @@
-# Your Project Name
+# XLabs AI Guide
 
-A starter template for the AI Engineering Buildcamp capstone. Replace this README with a description of your own project.
+A focused learning assistant that helps technical learners identify knowledge gaps and decide what to learn next.
 
 ## The Problem
 
-Describe the problem your project solves and who has it. One or two sentences.
+Technical learners can struggle to tell the difference between what they recognize and what they can actually apply. Without targeted feedback, it is difficult to know which concepts to revisit or what to practice next.
 
 ## What It Does
 
-Describe what the AI system does and a typical interaction. What does the user provide? What does the system return?
+Learners answer practical technical questions and troubleshooting scenarios in one focused domain. The guide evaluates their responses against trusted technical documentation, identifies likely knowledge gaps, and returns a structured assessment with personalized learning and practice recommendations.
 
 ## Setup
 
@@ -35,4 +35,4 @@ Describe what the AI system does and a typical interaction. What does the user p
 
 ## Data
 
-Put your project data in the `data/` folder. See `notebooks/02-rag.ipynb` for how to load it.
+Put trusted technical documentation and other project data in the `data/` folder. See `notebooks/02-rag.ipynb` for how to load it.
