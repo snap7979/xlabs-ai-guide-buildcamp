@@ -1,0 +1,20 @@
+[
+  {
+    "scenario_id": "pod-failures",
+    "domain": "kubernetes",
+    "title": "Pod failures and container output",
+    "scenario": "A Kubernetes Pod keeps restarting with CrashLoopBackOff. What would you inspect first, and how would you use the evidence to narrow the cause?"
+  },
+  {
+    "scenario_id": "services-networking",
+    "domain": "kubernetes",
+    "title": "Services and networking",
+    "scenario": "A Kubernetes Service exists, but requests do not reach its Pods. What would you inspect first, and what evidence would distinguish a selector or endpoint problem from a wider network problem?"
+  },
+  {
+    "scenario_id": "workloads-scheduling",
+    "domain": "kubernetes",
+    "title": "Workloads, rollouts, and scheduling",
+    "scenario": "A Kubernetes Deployment rollout does not complete and some new Pods remain unavailable. What would you inspect first, and how would you verify the blocking condition?"
+  }
+]
