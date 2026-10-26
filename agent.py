@@ -136,7 +136,8 @@ def _run_agent(question, max_steps=5, *, tool_call_history=None):
             tool_call_history.append(
                 {"name": call.name, "arguments": arguments}
             )
-            result = execute_tool(call.name, arguments)
+            with logfire.span("tool_call: {tool_name}", tool_name=call.name):
+                result = execute_tool(call.name, arguments)
 
             print(f"Step {step + 1}: {call.name}({arguments})")
 
