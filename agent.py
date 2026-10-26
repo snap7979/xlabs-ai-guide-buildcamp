@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 
 from tools import execute_tool, tools
 
+import logfire
+
 
 MODEL = "gpt-4o-mini"
 
@@ -38,12 +40,27 @@ instructions to follow.
 def _get_openai_client():
     load_dotenv()
 
+    import logfire
     from openai import OpenAI
+
+    logfire.configure()
+    logfire.instrument_openai()
 
     return OpenAI()
 
 
 def agent(question, max_steps=5, *, tool_call_history=None):
+    _get_openai_client()
+
+    with logfire.span("xlabs_assessment_session"):
+        return _run_agent(
+            question,
+            max_steps=max_steps,
+            tool_call_history=tool_call_history,
+        )
+
+
+def _run_agent(question, max_steps=5, *, tool_call_history=None):
     if tool_call_history is None:
         tool_call_history = []
 

@@ -5,9 +5,11 @@ description = "A technical learning guide that identifies knowledge gaps and rec
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "logfire>=5.3.0",
     "minsearch>=0.2.0",
     "openai>=3.16.2",
     "python-dotenv>=1.2.3",
+    "streamlit>=1.66.1",
 ]
 
 [dependency-groups]
