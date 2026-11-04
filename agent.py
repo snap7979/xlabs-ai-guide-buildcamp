@@ -50,21 +50,31 @@ def _get_openai_client():
 
 
 def agent(question, max_steps=5, *, tool_call_history=None):
-    _get_openai_client()
+    openai_client = _get_openai_client()
 
     with logfire.span("xlabs_assessment_session"):
         return _run_agent(
             question,
             max_steps=max_steps,
             tool_call_history=tool_call_history,
+            openai_client=openai_client,
         )
 
 
-def _run_agent(question, max_steps=5, *, tool_call_history=None):
+def _run_agent(
+    question,
+    max_steps=5,
+    *,
+    tool_call_history=None,
+    openai_client=None,
+):
     if tool_call_history is None:
         tool_call_history = []
 
-    openai_client = _get_openai_client()
+    if openai_client is None:
+        openai_client = _get_openai_client()
+
+  
     agent_instructions = (
         INSTRUCTIONS
         + "\nFor learner assessments, use search_docs first, "
