@@ -1,0 +1,536 @@
+{
+  "dataset_title": "XLabs AI Guide reviewed ground-truth candidates",
+  "schema_version": 1,
+  "review_provenance": {
+    "approval": "The user states that the expected assessment criteria below were reviewed and approved in ChatGPT on 2026-11-08.",
+    "reviewer_identity": null,
+    "reviewer_identity_note": "No reviewer identity is recorded in this dataset.",
+    "scope": "The approval applies to the expected assessment criteria, not to the original case wording, the original LLM-generated material, the saved Agent responses, or the comparison findings.",
+    "human_authorship": "Do not infer that existing case prompts or learner answers were independently human-authored. The synthetic source labels these cases synthetic; authorship of the manual CSV prompts is not established by the saved files."
+  },
+  "source_data_policy": {
+    "synthetic_cases": "Original scenarios, learner answers, and generated reference assessments are copied from evals/synthetic/data/generated_cases.json. The generated reference assessment is retained as provisional only; it is not the approved expected assessment.",
+    "manual_cases": "Original combined prompts are copied from evals/manual/data/scenarios.csv. Scenario and learner-input fields are separated for readability; original_prompt preserves the exact source row.",
+    "saved_agent_outputs": "Response references point to existing outputs and include SHA-256 hashes of the response text for identification. No Agent, Judge, or evaluation was run to produce this dataset."
+  },
+  "cases": [
+    {
+      "case_id": "debug-running-pods-2",
+      "domain": "pod_troubleshooting",
+      "input_origin": {
+        "kind": "synthetic",
+        "source_file": "evals/synthetic/data/generated_cases.json",
+        "source_id": "debug-running-pods-2",
+        "authorship_note": "The existing evaluation report and generation script identify the synthetic case/reference material as LLM-generated. It is not independently human-authored ground truth."
+      },
+      "original_scenario": "A database pod is failing to start, and the logs return no useful information.",
+      "learner_input": "I tried using `kubectl logs database-pod`, but it returned no logs. I think that means there is nothing wrong with the pod. Since there's nothing in the logs, there's no need to check further, and I can assume it's starting fine.",
+      "original_generated_reference_assessment": {
+        "status": "PROVISIONAL — LLM-GENERATED",
+        "assessment": {
+          "demonstrated_understanding": [
+            "The learner appropriately checked the Pod logs with `kubectl logs`; the unsupported conclusion is that empty logs mean the Pod is healthy."
+          ],
+          "explicit_misconceptions": [
+            "The learner incorrectly interprets the absence of logs as an indication that the pod is starting fine, indicating a misunderstanding of how log output reflects pod health."
+          ],
+          "checks_not_discussed": [
+            "The learner did not mention using `kubectl describe pod` to inspect events or status further, which is critical when logs are uninformative."
+          ],
+          "suggested_next_steps": [
+            "Advise the learner to check the pod's events with `kubectl describe pod database-pod` to identify potential issues that did not manifest in the logs.",
+            "Encourage assessing the previous logs with `kubectl logs database-pod --previous` if the pod has restarted, which may highlight failures or issues prior to the current state."
+          ]
+        }
+      },
+      "approved_expected_assessment_criteria": [
+        "Credit the learner for checking logs.",
+        "Flag the claim that missing logs prove the Pod is healthy.",
+        "Recommend checking Pod status and events.",
+        "Recommend previous logs when a container restarted.",
+        "Do not invent a specific failure cause."
+      ],
+      "repository_documentation": {
+        "source_file": "data/kubernetes_troubleshooting_docs.json",
+        "source_id": "debug-running-pods",
+        "source_title": "Debugging Running Pods",
+        "source_url": "https://kubernetes.io/docs/tasks/debug/debug-application/debug-running-pod/",
+        "stored_evidence": "The record says to inspect Pod status and recent events with `kubectl describe pod`, read container logs with `kubectl logs`, and use `--previous` to inspect the last terminated container."
+      },
+      "saved_agent_response": {
+        "source_file": "evals/synthetic/data/agent_results_current_baseline.json",
+        "lookup": {
+          "field": "case_id",
+          "value": "debug-running-pods-2"
+        },
+        "verified_input_matches_case": true,
+        "error": null,
+        "response_sha256": "31534a912d0d95004bea4ee5648852c4d09bd4f3576c461b69b48279f72ac4c9",
+        "alternate_saved_version": "evals/synthetic/data/agent_results.json contains the same case ID but a different response; the comparison report uses the timestamped current-baseline file above."
+      }
+    },
+    {
+      "case_id": "debug-services-2",
+      "domain": "service_connectivity",
+      "input_origin": {
+        "kind": "synthetic",
+        "source_file": "evals/synthetic/data/generated_cases.json",
+        "source_id": "debug-services-2",
+        "authorship_note": "The existing evaluation report and generation script identify the synthetic case/reference material as LLM-generated. It is not independently human-authored ground truth."
+      },
+      "original_scenario": "A developer has set up a Service but it is not working as expected. They report that trying to connect through the Service address returns errors, although they can reach the Pods directly.",
+      "learner_input": "I suspect the problem is the way the Service was defined. I think I might have not added the correct ports in the Service definition. Instead of checking the Service selector or endpoints, I will just redefine the Service with new ports, as I believe the Pods should be able to connect to the Service without needing adjustments to labels or selectors.",
+      "original_generated_reference_assessment": {
+        "status": "PROVISIONAL — LLM-GENERATED",
+        "assessment": {
+          "demonstrated_understanding": [],
+          "explicit_misconceptions": [
+            "The learner assumes changing the Service ports alone will resolve the issue and that the Service can work without checking whether its selector matches the Pod labels."
+          ],
+          "checks_not_discussed": [
+            "The learner did not verify the Service selector against the Pods' labels.",
+            "The learner did not check if there were any endpoints associated with the Service before deciding to redefine the Service.",
+            "The learner did not compare connectivity through the Service from inside the cluster with access to a Pod IP to isolate the Service path."
+          ],
+          "suggested_next_steps": [
+            "Verify the Service selector against the Pods' labels to ensure they are correct before making changes to the Service.",
+            "Check the Service endpoints to confirm there are active Pods backing the Service.",
+            "Conduct connectivity tests from within the cluster to assess if requests are routed correctly through the Service."
+          ]
+        }
+      },
+      "approved_expected_assessment_criteria": [
+        "Treat incorrect ports as a possible hypothesis, not automatically a misconception.",
+        "Flag the explicit dismissal of selector and label checks.",
+        "Recommend selector/label verification.",
+        "Recommend checking endpoints and ports.",
+        "Compare Service connectivity against direct Pod connectivity.",
+        "Do not claim a confirmed root cause."
+      ],
+      "repository_documentation": {
+        "source_file": "data/kubernetes_troubleshooting_docs.json",
+        "source_id": "debug-services",
+        "source_title": "Debugging Services",
+        "source_url": "https://kubernetes.io/docs/tasks/debug/debug-application/debug-service/",
+        "stored_evidence": "The record says to check that the Service selector matches intended Pod labels and that the Service has endpoints; compare Service port and targetPort with the application port; and compare Service access with Pod-IP access to narrow down a Service-path issue."
+      },
+      "saved_agent_response": {
+        "source_file": "evals/synthetic/data/agent_results_current_baseline.json",
+        "lookup": {
+          "field": "case_id",
+          "value": "debug-services-2"
+        },
+        "verified_input_matches_case": true,
+        "error": null,
+        "response_sha256": "78225b0afb9a017a48942f03243a97dc5217986305979350e85fff38855bbac6",
+        "alternate_saved_version": "evals/synthetic/data/agent_results.json contains the same case ID but a different response; the comparison report uses the timestamped current-baseline file above."
+      }
+    },
+    {
+      "case_id": "dns-services-pods-2",
+      "domain": "dns_resolution",
+      "input_origin": {
+        "kind": "synthetic",
+        "source_file": "evals/synthetic/data/generated_cases.json",
+        "source_id": "dns-services-pods-2",
+        "authorship_note": "The existing evaluation report and generation script identify the synthetic case/reference material as LLM-generated. It is not independently human-authored ground truth."
+      },
+      "original_scenario": "While working on a Kubernetes deployment, a developer cannot reach a service using its name, despite being able to access it via the IP address. They attempt to troubleshoot the issue.",
+      "learner_input": "Since the service is reachable by IP but not by name, the issue must be due to the DNS configuration in the cluster. I will check if the service name is correct; it should be written as SERVICE_NAME instead of SERVICE.NAMESPACE. Also, the namespace should not be specified, as Kubernetes automatically resolves service names to their clusters without that.",
+      "original_generated_reference_assessment": {
+        "status": "PROVISIONAL — LLM-GENERATED",
+        "assessment": {
+          "demonstrated_understanding": [],
+          "explicit_misconceptions": [
+            "The learner incorrectly claims that the namespace should never be specified and that the Service name must be short. A short Service name can resolve within the same namespace; cross-namespace access requires an appropriately qualified name, such as SERVICE.NAMESPACE."
+          ],
+          "checks_not_discussed": [
+            "The learner does not mention checking the /etc/resolv.conf file, which is important for DNS configuration inspection.",
+            "The learner failed to mention testing the DNS resolution using nslookup, which would provide immediate feedback on the connective issue."
+          ],
+          "suggested_next_steps": [
+            "Clarify that a short Service name resolves within the same namespace; cross-namespace lookups need an appropriately qualified name, such as SERVICE.NAMESPACE or SERVICE.NAMESPACE.svc.cluster.local.",
+            "Use the nslookup command to diagnose if the service name can be resolved from within the Pod.",
+            "Inspect the /etc/resolv.conf file to ensure that the DNS resolution is set up appropriately."
+          ]
+        }
+      },
+      "approved_expected_assessment_criteria": [
+        "Credit proposing DNS investigation, but not an unverified certainty about root cause.",
+        "Flag the claim that namespaces are never needed.",
+        "Explain same-namespace versus cross-namespace resolution.",
+        "Recommend DNS lookup tests from a Pod.",
+        "Recommend inspecting Pod DNS configuration.",
+        "Do not invent a confirmed DNS failure."
+      ],
+      "repository_documentation": {
+        "source_file": "data/kubernetes_troubleshooting_docs.json",
+        "source_id": "dns-services-pods",
+        "source_title": "DNS for Services and Pods",
+        "source_url": "https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/",
+        "stored_evidence": "The record recommends testing name resolution from a Pod and inspecting `/etc/resolv.conf`; it describes a Service DNS name containing Service name and namespace, with `svc` and cluster domain. The stored summary does not explicitly explain that an unqualified lookup is scoped to the caller Pod's namespace."
+      },
+      "saved_agent_response": {
+        "source_file": "evals/synthetic/data/agent_results_current_baseline.json",
+        "lookup": {
+          "field": "case_id",
+          "value": "dns-services-pods-2"
+        },
+        "verified_input_matches_case": true,
+        "error": null,
+        "response_sha256": "275c3057381245be1beb754b6a6bd13dc8a536ed79ba25a941f8f7b4fbc3edb1",
+        "alternate_saved_version": "evals/synthetic/data/agent_results.json contains the same case ID but a different response; the comparison report uses the timestamped current-baseline file above."
+      }
+    },
+    {
+      "case_id": "debug-running-pods-1",
+      "domain": "pod_troubleshooting",
+      "input_origin": {
+        "kind": "synthetic",
+        "source_file": "evals/synthetic/data/generated_cases.json",
+        "source_id": "debug-running-pods-1",
+        "authorship_note": "The existing evaluation report and generation script identify the synthetic case/reference material as LLM-generated. It is not independently human-authored ground truth."
+      },
+      "original_scenario": "A pod for a web application is showing an unhealthy status and containers are in a restart loop.",
+      "learner_input": "I would first check the status of the pod by using `kubectl describe pod pod-name`. This can help me see events related to why the pod is unhealthy. If the logs don't provide enough information, I can try to execute a shell in the container to see the running state using `kubectl exec -it pod-name -- sh`. This way, I can also look at application configurations or processes directly.",
+      "original_generated_reference_assessment": {
+        "status": "PROVISIONAL — LLM-GENERATED",
+        "assessment": {
+          "demonstrated_understanding": [
+            "Learner correctly identifies using `kubectl describe pod` to check events related to the pod's status, indicating an understanding of how to diagnose issues with pod health.",
+            "The learner identifies `kubectl exec` as a way to inspect a container when logs are insufficient; this is appropriate only when the container is running and accessible and the image and permissions allow it."
+          ],
+          "explicit_misconceptions": [],
+          "checks_not_discussed": [],
+          "suggested_next_steps": [
+            "Check the logs using `kubectl logs pod-name` to gain additional insights into the restarts before using exec.",
+            "Consider specifying `-c CONTAINER_NAME` if there are multiple containers in the pod to directly inspect the container in question, and use exec only when the container is running and accessible."
+          ]
+        }
+      },
+      "approved_expected_assessment_criteria": [
+        "Credit Pod status and event inspection.",
+        "Recognize that logs were mentioned conditionally, not executed.",
+        "Credit container inspection when technically possible.",
+        "Explain that crash loops can prevent `exec`.",
+        "Recommend previous logs when relevant.",
+        "Do not invent a restart cause."
+      ],
+      "repository_documentation": {
+        "source_file": "data/kubernetes_troubleshooting_docs.json",
+        "source_id": "debug-running-pods",
+        "source_title": "Debugging Running Pods",
+        "source_url": "https://kubernetes.io/docs/tasks/debug/debug-application/debug-running-pod/",
+        "stored_evidence": "The record supports inspecting Pod status/events and reading logs, including previous logs. It says `kubectl exec` is for inspecting a running container if the image and permissions allow it; it does not explicitly mention CrashLoopBackOff by name."
+      },
+      "saved_agent_response": {
+        "source_file": "evals/synthetic/data/agent_results_current_baseline.json",
+        "lookup": {
+          "field": "case_id",
+          "value": "debug-running-pods-1"
+        },
+        "verified_input_matches_case": true,
+        "error": null,
+        "response_sha256": "51eca47ac675f5f28640ae83087174cb9a4e6aaf879abe3685c9a2502bb65a27",
+        "alternate_saved_version": "evals/synthetic/data/agent_results.json contains the same case ID but a different response; the comparison report uses the timestamped current-baseline file above."
+      }
+    },
+    {
+      "case_id": "manual-scenarios-row-33",
+      "domain": "pod_troubleshooting",
+      "input_origin": {
+        "kind": "manual_evaluation_scenario",
+        "source_file": "evals/manual/data/scenarios.csv",
+        "source_id": "1-based row 33",
+        "authorship_note": "The prompt is an existing manual evaluation scenario; human authorship is not established by repository evidence."
+      },
+      "original_prompt": "A Pod is Running but unhealthy. The learner claims Running always means the application is healthy. Assess this reasoning.",
+      "original_scenario": "A Pod is Running but unhealthy.",
+      "learner_input": "The learner claims Running always means the application is healthy.",
+      "original_generated_reference_assessment": null,
+      "approved_expected_assessment_criteria": [
+        "Flag the claim that Running always means application health.",
+        "Distinguish Running from Ready.",
+        "Recommend readiness checks.",
+        "Recommend events and logs as relevant.",
+        "Do not assume a specific fault.",
+        "Do not credit diagnostic steps that the learner did not provide."
+      ],
+      "repository_documentation": {
+        "source_file": "data/kubernetes_troubleshooting_docs.json",
+        "source_id": "debug-running-pods",
+        "source_title": "Debugging Running Pods",
+        "source_url": "https://kubernetes.io/docs/tasks/debug/debug-application/debug-running-pod/",
+        "stored_evidence": "The record describes unhealthy applications in existing Pods and recommends inspecting Pod status/events and reading logs.",
+        "evidence_gap": "The stored documentation summary does not explicitly define or contrast Running and Ready, or give a readiness-check procedure. Those approved criteria require additional source detail not present in this repository record."
+      },
+      "existing_manual_label": {
+        "source_file": "evals/manual/data/results_labeled.json",
+        "record_index_1based": 33,
+        "label": "good",
+        "note": "This is an existing Agent-response quality label. It is not changed here and is not treated as an independently established expected assessment."
+      },
+      "saved_agent_response": {
+        "source_file": "evals/manual/data/results.json",
+        "lookup": {
+          "field": "input.question",
+          "value": "Exact match to original_prompt at 1-based record index 33"
+        },
+        "record_index_1based": 33,
+        "verified_input_matches_case": true,
+        "identical_response_also_in": "evals/manual/data/results_labeled.json",
+        "response_sha256": "62e3ff2712860edd918a8cf2cceeeda0a836c4cea5c7629e3b1c7d06e62ba34f"
+      }
+    },
+    {
+      "case_id": "debug-services-1",
+      "domain": "service_connectivity",
+      "input_origin": {
+        "kind": "synthetic",
+        "source_file": "evals/synthetic/data/generated_cases.json",
+        "source_id": "debug-services-1",
+        "authorship_note": "The existing evaluation report and generation script identify the synthetic case/reference material as LLM-generated. It is not independently human-authored ground truth."
+      },
+      "original_scenario": "A developer has created a Kubernetes Service for an application but is unable to access the application using the Service address. They notice traffic does not seem to reach the application Pods.",
+      "learner_input": "I checked the Service configuration and confirmed the selector matches the Pods' labels. I also used `kubectl get endpoints` to ensure the Service has endpoints associated with it. I compared the Service port and targetPort, and they match the application's exposed port. To further troubleshoot, I tested connectivity by accessing the Pod IP directly and found that I could reach the application that way.",
+      "original_generated_reference_assessment": {
+        "status": "PROVISIONAL — LLM-GENERATED",
+        "assessment": {
+          "demonstrated_understanding": [
+            "The learner accurately checked if the Service selector matches the Pods' labels.",
+            "The learner verified that the Service has endpoints associated with it using `kubectl get endpoints`.",
+            "The learner correctly compared the Service port and targetPort with the application port and found them to match, indicating proper configuration.",
+            "The learner successfully tested connectivity by accessing the Pod IP, isolating potential issues with the Service configuration."
+          ],
+          "explicit_misconceptions": [],
+          "checks_not_discussed": [],
+          "suggested_next_steps": [
+            "Test connectivity from inside the cluster through the Service and compare it with access to a Pod IP to narrow down whether the issue is in the Service path."
+          ]
+        }
+      },
+      "approved_expected_assessment_criteria": [
+        "Credit selector/label checks.",
+        "Credit endpoint verification.",
+        "Credit port checks.",
+        "Credit direct Pod connectivity testing.",
+        "Recommend further investigation of the Service traffic path.",
+        "Do not invent a DNS or other root cause."
+      ],
+      "repository_documentation": {
+        "source_file": "data/kubernetes_troubleshooting_docs.json",
+        "source_id": "debug-services",
+        "source_title": "Debugging Services",
+        "source_url": "https://kubernetes.io/docs/tasks/debug/debug-application/debug-service/",
+        "stored_evidence": "The record directly supports selector-to-label matching, endpoint checks, comparing Service port and targetPort with the application port, and comparing access through the Service with direct Pod-IP access."
+      },
+      "saved_agent_response": {
+        "source_file": "evals/synthetic/data/agent_results_current_baseline.json",
+        "lookup": {
+          "field": "case_id",
+          "value": "debug-services-1"
+        },
+        "verified_input_matches_case": true,
+        "error": null,
+        "response_sha256": "d41d6c8bbc9a8f990b5384317be368eade07e0a511b6e74dbd233ed4899ddb85",
+        "alternate_saved_version": "evals/synthetic/data/agent_results.json contains the same case ID but a different response; the comparison report uses the timestamped current-baseline file above."
+      }
+    },
+    {
+      "case_id": "manual-scenarios-row-30",
+      "domain": "service_connectivity",
+      "input_origin": {
+        "kind": "manual_evaluation_scenario",
+        "source_file": "evals/manual/data/scenarios.csv",
+        "source_id": "1-based row 30",
+        "authorship_note": "The prompt is an existing manual evaluation scenario; human authorship is not established by repository evidence."
+      },
+      "original_prompt": "A Service has no endpoints. The learner says: I would restart every node immediately. Assess this reasoning.",
+      "original_scenario": "A Service has no endpoints.",
+      "learner_input": "I would restart every node immediately.",
+      "original_generated_reference_assessment": null,
+      "approved_expected_assessment_criteria": [
+        "Flag restarting all nodes immediately as unjustified.",
+        "Explain why missing endpoints warrant targeted inspection.",
+        "Recommend selector/label checks.",
+        "Recommend endpoint and target Pod checks.",
+        "Do not credit the learner for facts provided only in the scenario.",
+        "Do not claim node restart would fix the problem."
+      ],
+      "repository_documentation": {
+        "source_file": "data/kubernetes_troubleshooting_docs.json",
+        "source_id": "debug-services",
+        "source_title": "Debugging Services",
+        "source_url": "https://kubernetes.io/docs/tasks/debug/debug-application/debug-service/",
+        "stored_evidence": "The record recommends verifying that the Service selector matches intended Pod labels and that the Service has endpoints.",
+        "evidence_gap": "The stored summary supports targeted selector and endpoint checks but does not state a direct causal account of all possible reasons for missing endpoints or discuss restarting nodes."
+      },
+      "existing_manual_label": {
+        "source_file": "evals/manual/data/results_labeled.json",
+        "record_index_1based": 30,
+        "label": null,
+        "note": "No existing human label is recorded for this Agent response."
+      },
+      "saved_agent_response": {
+        "source_file": "evals/manual/data/results.json",
+        "lookup": {
+          "field": "input.question",
+          "value": "Exact match to original_prompt at 1-based record index 30"
+        },
+        "record_index_1based": 30,
+        "verified_input_matches_case": true,
+        "identical_response_also_in": "evals/manual/data/results_labeled.json",
+        "response_sha256": "86923b15bd8c4f08a10b89c86545897cb4d8938dc5549ea28faa93508483dfcf"
+      }
+    },
+    {
+      "case_id": "manual-scenarios-row-31",
+      "domain": "service_connectivity",
+      "input_origin": {
+        "kind": "manual_evaluation_scenario",
+        "source_file": "evals/manual/data/scenarios.csv",
+        "source_id": "1-based row 31",
+        "authorship_note": "The prompt is an existing manual evaluation scenario; human authorship is not established by repository evidence."
+      },
+      "original_prompt": "A Service cannot reach its Pods. The learner checks selectors correctly but incorrectly claims targetPort never matters. Assess this reasoning.",
+      "original_scenario": "A Service cannot reach its Pods.",
+      "learner_input": "The learner checks selectors correctly but incorrectly claims targetPort never matters.",
+      "original_generated_reference_assessment": null,
+      "approved_expected_assessment_criteria": [
+        "Credit correct selector inspection.",
+        "Flag the statement that targetPort never matters.",
+        "Explain Service port versus targetPort.",
+        "Recommend validating the application's destination port.",
+        "Preserve both the correct reasoning and the misconception.",
+        "Do not claim that the port caused the observed failure."
+      ],
+      "repository_documentation": {
+        "source_file": "data/kubernetes_troubleshooting_docs.json",
+        "source_id": "debug-services",
+        "source_title": "Debugging Services",
+        "source_url": "https://kubernetes.io/docs/tasks/debug/debug-application/debug-service/",
+        "stored_evidence": "The record recommends comparing Service port and targetPort with the application port."
+      },
+      "existing_manual_label": {
+        "source_file": "evals/manual/data/results_labeled.json",
+        "record_index_1based": 31,
+        "label": "good",
+        "note": "This is an existing Agent-response quality label. It is not changed here and is not treated as an independently established expected assessment."
+      },
+      "saved_agent_response": {
+        "source_file": "evals/manual/data/results.json",
+        "lookup": {
+          "field": "input.question",
+          "value": "Exact match to original_prompt at 1-based record index 31"
+        },
+        "record_index_1based": 31,
+        "verified_input_matches_case": true,
+        "identical_response_also_in": "evals/manual/data/results_labeled.json",
+        "response_sha256": "47525962b6991152f1bc957d0208ac64f303fa057aa3e2a5843eaa920185e9ae"
+      }
+    },
+    {
+      "case_id": "manual-scenarios-row-36",
+      "domain": "dns_resolution",
+      "input_origin": {
+        "kind": "manual_evaluation_scenario",
+        "source_file": "evals/manual/data/scenarios.csv",
+        "source_id": "1-based row 36",
+        "authorship_note": "The prompt is an existing manual evaluation scenario; human authorship is not established by repository evidence."
+      },
+      "original_prompt": "DNS fails but direct IP connectivity works. The learner proposes checking only the Service port. Assess this reasoning.",
+      "original_scenario": "DNS fails but direct IP connectivity works.",
+      "learner_input": "The learner proposes checking only the Service port.",
+      "original_generated_reference_assessment": null,
+      "approved_expected_assessment_criteria": [
+        "Recognize port checks as possible but insufficient.",
+        "Explain why IP success versus name failure warrants DNS checks.",
+        "Classify the limited diagnosis as an omission rather than necessarily a misconception.",
+        "Recommend testing Service name resolution.",
+        "Recommend DNS and namespace inspection when relevant.",
+        "Do not invent a confirmed root cause."
+      ],
+      "repository_documentation": {
+        "source_file": "data/kubernetes_troubleshooting_docs.json",
+        "source_id": "dns-services-pods",
+        "source_title": "DNS for Services and Pods",
+        "source_url": "https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/",
+        "stored_evidence": "The record describes the symptom of reaching an application by IP but not by Service name and recommends testing name resolution from a Pod and inspecting `/etc/resolv.conf`.",
+        "evidence_gap": "The stored DNS summary does not explain namespace search behavior in detail; the approved namespace-specific criterion is conditional ('when relevant')."
+      },
+      "existing_manual_label": {
+        "source_file": "evals/manual/data/results_labeled.json",
+        "record_index_1based": 36,
+        "label": null,
+        "note": "No existing human label is recorded for this Agent response."
+      },
+      "saved_agent_response": {
+        "source_file": "evals/manual/data/results.json",
+        "lookup": {
+          "field": "input.question",
+          "value": "Exact match to original_prompt at 1-based record index 36"
+        },
+        "record_index_1based": 36,
+        "verified_input_matches_case": true,
+        "identical_response_also_in": "evals/manual/data/results_labeled.json",
+        "response_sha256": "a9422c89e945688e8a4570ffb6b0adab04c9afd4fea46b457f887226125d0a27"
+      }
+    },
+    {
+      "case_id": "dns-services-pods-1",
+      "domain": "dns_resolution",
+      "input_origin": {
+        "kind": "synthetic",
+        "source_file": "evals/synthetic/data/generated_cases.json",
+        "source_id": "dns-services-pods-1",
+        "authorship_note": "The existing evaluation report and generation script identify the synthetic case/reference material as LLM-generated. It is not independently human-authored ground truth."
+      },
+      "original_scenario": "A DevOps engineer notices that their application deployed in a Kubernetes cluster can be accessed using its IP address, but attempts to reach it via its service name fail. They decide to troubleshoot the issue.",
+      "learner_input": "To troubleshoot the problem, I would first check the DNS resolution from a Pod. I would use the command: kubectl exec -it POD_NAME -- nslookup SERVICE_NAME.NAMESPACE. If that fails, I will also check the /etc/resolv.conf file in the Pod using: kubectl exec -it POD_NAME -- cat /etc/resolv.conf. Additionally, I will verify that the cluster's DNS Pods are running correctly by executing kubectl get pods -n kube-system -l k8s-app=kube-dns. Finally, I will review the logs of the DNS Pods to look for any errors.",
+      "original_generated_reference_assessment": {
+        "status": "PROVISIONAL — LLM-GENERATED",
+        "assessment": {
+          "demonstrated_understanding": [
+            "The learner correctly identifies the use of nslookup to test DNS resolution from a Pod.",
+            "The learner mentions inspecting the /etc/resolv.conf file to understand DNS configuration within the Pod.",
+            "The learner recognizes the need to ensure that the DNS Pods are operational, indicating awareness of the potential source of the name resolution issue.",
+            "The learner notes the importance of checking DNS logs for errors, demonstrating thorough troubleshooting steps."
+          ],
+          "explicit_misconceptions": [],
+          "checks_not_discussed": [],
+          "suggested_next_steps": [
+            "Try the commands as detailed in the answer to perform the troubleshooting steps.",
+            "Examine the logs of the DNS Pods for specific error messages or warnings that could indicate the root cause of the failure.",
+            "Verify that the target Service has endpoints."
+          ]
+        }
+      },
+      "approved_expected_assessment_criteria": [
+        "Credit Pod-level name resolution testing.",
+        "Credit inspecting resolv.conf.",
+        "Credit checking cluster DNS components.",
+        "Credit reviewing DNS component logs.",
+        "Note missing Service endpoint verification as an additional useful check.",
+        "Do not claim DNS is definitively the root cause."
+      ],
+      "repository_documentation": {
+        "source_file": "data/kubernetes_troubleshooting_docs.json",
+        "source_id": "dns-services-pods",
+        "source_title": "DNS for Services and Pods",
+        "source_url": "https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/",
+        "stored_evidence": "The record supports Pod-level name lookup and `/etc/resolv.conf` inspection, checking cluster DNS Pods and their logs, and verifying target Service endpoints."
+      },
+      "saved_agent_response": {
+        "source_file": "evals/synthetic/data/agent_results_current_baseline.json",
+        "lookup": {
+          "field": "case_id",
+          "value": "dns-services-pods-1"
+        },
+        "verified_input_matches_case": true,
+        "error": null,
+        "response_sha256": "e10389442c0eb83661d83651ce4cae30f46a197b22e299e7e9afd2608ee2d55b",
+        "alternate_saved_version": "evals/synthetic/data/agent_results.json contains the same case ID but a different response; the comparison report uses the timestamped current-baseline file above."
+      }
+    }
+  ]
+}

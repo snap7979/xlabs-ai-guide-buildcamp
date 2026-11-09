@@ -1,0 +1,11 @@
+services:
+  app:
+    image: xlabs-ai-guide:step14
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "127.0.0.1:${HOST_PORT:-8501}:8501"
+    environment:
+      - OPENAI_API_KEY
+      - LOGFIRE_TOKEN

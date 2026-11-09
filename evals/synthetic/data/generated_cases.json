@@ -1,0 +1,130 @@
+[
+  {
+    "scenario": "A pod for a web application is showing an unhealthy status and containers are in a restart loop.",
+    "learner_answer": "I would first check the status of the pod by using `kubectl describe pod pod-name`. This can help me see events related to why the pod is unhealthy. If the logs don't provide enough information, I can try to execute a shell in the container to see the running state using `kubectl exec -it pod-name -- sh`. This way, I can also look at application configurations or processes directly.",
+    "reference_assessment": {
+      "demonstrated_understanding": [
+        "Learner correctly identifies using `kubectl describe pod` to check events related to the pod's status, indicating an understanding of how to diagnose issues with pod health.",
+        "The learner identifies `kubectl exec` as a way to inspect a container when logs are insufficient; this is appropriate only when the container is running and accessible and the image and permissions allow it."
+      ],
+      "explicit_misconceptions": [],
+      "checks_not_discussed": [],
+      "suggested_next_steps": [
+        "Check the logs using `kubectl logs pod-name` to gain additional insights into the restarts before using exec.",
+        "Consider specifying `-c CONTAINER_NAME` if there are multiple containers in the pod to directly inspect the container in question, and use exec only when the container is running and accessible."
+      ]
+    },
+    "case_id": "debug-running-pods-1",
+    "source_doc_id": "debug-running-pods",
+    "source_url": "https://kubernetes.io/docs/tasks/debug/debug-application/debug-running-pod/"
+  },
+  {
+    "scenario": "A database pod is failing to start, and the logs return no useful information.",
+    "learner_answer": "I tried using `kubectl logs database-pod`, but it returned no logs. I think that means there is nothing wrong with the pod. Since there's nothing in the logs, there's no need to check further, and I can assume it's starting fine.",
+    "reference_assessment": {
+      "demonstrated_understanding": [
+        "The learner appropriately checked the Pod logs with `kubectl logs`; the unsupported conclusion is that empty logs mean the Pod is healthy."
+      ],
+      "explicit_misconceptions": [
+        "The learner incorrectly interprets the absence of logs as an indication that the pod is starting fine, indicating a misunderstanding of how log output reflects pod health."
+      ],
+      "checks_not_discussed": [
+        "The learner did not mention using `kubectl describe pod` to inspect events or status further, which is critical when logs are uninformative."
+      ],
+      "suggested_next_steps": [
+        "Advise the learner to check the pod's events with `kubectl describe pod database-pod` to identify potential issues that did not manifest in the logs.",
+        "Encourage assessing the previous logs with `kubectl logs database-pod --previous` if the pod has restarted, which may highlight failures or issues prior to the current state."
+      ]
+    },
+    "case_id": "debug-running-pods-2",
+    "source_doc_id": "debug-running-pods",
+    "source_url": "https://kubernetes.io/docs/tasks/debug/debug-application/debug-running-pod/"
+  },
+  {
+    "scenario": "A developer has created a Kubernetes Service for an application but is unable to access the application using the Service address. They notice traffic does not seem to reach the application Pods.",
+    "learner_answer": "I checked the Service configuration and confirmed the selector matches the Pods' labels. I also used `kubectl get endpoints` to ensure the Service has endpoints associated with it. I compared the Service port and targetPort, and they match the application's exposed port. To further troubleshoot, I tested connectivity by accessing the Pod IP directly and found that I could reach the application that way.",
+    "reference_assessment": {
+      "demonstrated_understanding": [
+        "The learner accurately checked if the Service selector matches the Pods' labels.",
+        "The learner verified that the Service has endpoints associated with it using `kubectl get endpoints`.",
+        "The learner correctly compared the Service port and targetPort with the application port and found them to match, indicating proper configuration.",
+        "The learner successfully tested connectivity by accessing the Pod IP, isolating potential issues with the Service configuration."
+      ],
+      "explicit_misconceptions": [],
+      "checks_not_discussed": [],
+      "suggested_next_steps": [
+        "Test connectivity from inside the cluster through the Service and compare it with access to a Pod IP to narrow down whether the issue is in the Service path."
+      ]
+    },
+    "case_id": "debug-services-1",
+    "source_doc_id": "debug-services",
+    "source_url": "https://kubernetes.io/docs/tasks/debug/debug-application/debug-service/"
+  },
+  {
+    "scenario": "A developer has set up a Service but it is not working as expected. They report that trying to connect through the Service address returns errors, although they can reach the Pods directly.",
+    "learner_answer": "I suspect the problem is the way the Service was defined. I think I might have not added the correct ports in the Service definition. Instead of checking the Service selector or endpoints, I will just redefine the Service with new ports, as I believe the Pods should be able to connect to the Service without needing adjustments to labels or selectors.",
+    "reference_assessment": {
+      "demonstrated_understanding": [],
+      "explicit_misconceptions": [
+        "The learner assumes changing the Service ports alone will resolve the issue and that the Service can work without checking whether its selector matches the Pod labels."
+      ],
+      "checks_not_discussed": [
+        "The learner did not verify the Service selector against the Pods' labels.",
+        "The learner did not check if there were any endpoints associated with the Service before deciding to redefine the Service.",
+        "The learner did not compare connectivity through the Service from inside the cluster with access to a Pod IP to isolate the Service path."
+      ],
+      "suggested_next_steps": [
+        "Verify the Service selector against the Pods' labels to ensure they are correct before making changes to the Service.",
+        "Check the Service endpoints to confirm there are active Pods backing the Service.",
+        "Conduct connectivity tests from within the cluster to assess if requests are routed correctly through the Service."
+      ]
+    },
+    "case_id": "debug-services-2",
+    "source_doc_id": "debug-services",
+    "source_url": "https://kubernetes.io/docs/tasks/debug/debug-application/debug-service/"
+  },
+  {
+    "scenario": "A DevOps engineer notices that their application deployed in a Kubernetes cluster can be accessed using its IP address, but attempts to reach it via its service name fail. They decide to troubleshoot the issue.",
+    "learner_answer": "To troubleshoot the problem, I would first check the DNS resolution from a Pod. I would use the command: kubectl exec -it POD_NAME -- nslookup SERVICE_NAME.NAMESPACE. If that fails, I will also check the /etc/resolv.conf file in the Pod using: kubectl exec -it POD_NAME -- cat /etc/resolv.conf. Additionally, I will verify that the cluster's DNS Pods are running correctly by executing kubectl get pods -n kube-system -l k8s-app=kube-dns. Finally, I will review the logs of the DNS Pods to look for any errors.",
+    "reference_assessment": {
+      "demonstrated_understanding": [
+        "The learner correctly identifies the use of nslookup to test DNS resolution from a Pod.",
+        "The learner mentions inspecting the /etc/resolv.conf file to understand DNS configuration within the Pod.",
+        "The learner recognizes the need to ensure that the DNS Pods are operational, indicating awareness of the potential source of the name resolution issue.",
+        "The learner notes the importance of checking DNS logs for errors, demonstrating thorough troubleshooting steps."
+      ],
+      "explicit_misconceptions": [],
+      "checks_not_discussed": [],
+      "suggested_next_steps": [
+        "Try the commands as detailed in the answer to perform the troubleshooting steps.",
+        "Examine the logs of the DNS Pods for specific error messages or warnings that could indicate the root cause of the failure.",
+        "Verify that the target Service has endpoints."
+      ]
+    },
+    "case_id": "dns-services-pods-1",
+    "source_doc_id": "dns-services-pods",
+    "source_url": "https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/"
+  },
+  {
+    "scenario": "While working on a Kubernetes deployment, a developer cannot reach a service using its name, despite being able to access it via the IP address. They attempt to troubleshoot the issue.",
+    "learner_answer": "Since the service is reachable by IP but not by name, the issue must be due to the DNS configuration in the cluster. I will check if the service name is correct; it should be written as SERVICE_NAME instead of SERVICE.NAMESPACE. Also, the namespace should not be specified, as Kubernetes automatically resolves service names to their clusters without that.",
+    "reference_assessment": {
+      "demonstrated_understanding": [],
+      "explicit_misconceptions": [
+        "The learner incorrectly claims that the namespace should never be specified and that the Service name must be short. A short Service name can resolve within the same namespace; cross-namespace access requires an appropriately qualified name, such as SERVICE.NAMESPACE."
+      ],
+      "checks_not_discussed": [
+        "The learner does not mention checking the /etc/resolv.conf file, which is important for DNS configuration inspection.",
+        "The learner failed to mention testing the DNS resolution using nslookup, which would provide immediate feedback on the connective issue."
+      ],
+      "suggested_next_steps": [
+        "Clarify that a short Service name resolves within the same namespace; cross-namespace lookups need an appropriately qualified name, such as SERVICE.NAMESPACE or SERVICE.NAMESPACE.svc.cluster.local.",
+        "Use the nslookup command to diagnose if the service name can be resolved from within the Pod.",
+        "Inspect the /etc/resolv.conf file to ensure that the DNS resolution is set up appropriately."
+      ]
+    },
+    "case_id": "dns-services-pods-2",
+    "source_doc_id": "dns-services-pods",
+    "source_url": "https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/"
+  }
+]

@@ -1,0 +1,13 @@
+**
+!Dockerfile
+!.dockerignore
+!pyproject.toml
+!uv.lock
+!.python-version
+!README.md
+!app.py
+!agent.py
+!tools.py
+!data/
+!data/kubernetes_scenarios.json
+!data/kubernetes_troubleshooting_docs.json

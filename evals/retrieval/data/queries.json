@@ -1,0 +1,14 @@
+[
+  {
+    "query": "A Pod is unhealthy or its container keeps restarting.",
+    "expected_doc_id": "debug-running-pods"
+  },
+  {
+    "query": "A Service cannot route traffic to its Pods.",
+    "expected_doc_id": "debug-services"
+  },
+  {
+    "query": "A Service name fails to resolve even though access by IP works.",
+    "expected_doc_id": "dns-services-pods"
+  }
+]
