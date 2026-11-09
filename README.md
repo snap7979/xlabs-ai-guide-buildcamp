@@ -4,6 +4,30 @@ XLabs AI Guide is a Kubernetes troubleshooting learning assistant. It assesses t
 
 ![XLabs AI Guide Streamlit assessment](xlabs-ai-guide-streamlit-assessment.png)
 
+## Application Demo
+
+![Scenario input screen](docs/images/xlabs-agent-scenario-input.png)
+
+*1. Select a troubleshooting scenario and enter the learner's diagnostic approach.*
+
+![Agent assessment screen](docs/images/xlabs-agent-assessment.png)
+
+*2. Review the agent's assessment of demonstrated understanding and gaps.*
+
+![Next steps and sources screen](docs/images/xlabs-agent-next-steps-sources.png)
+
+*3. Follow suggested next steps grounded in the linked documentation sources.*
+
+## Reviewer Evidence
+
+The latest verified GitHub Actions result on `main` ran `make test-offline`: **2 tests passed**. See the [offline-tests workflow run history](https://github.com/snap7979/xlabs-ai-guide-buildcamp/actions/workflows/offline-tests.yml).
+
+- **Retrieval:** [Evaluation report](evals/retrieval/EVALUATION_REPORT.md).
+- **Manual and synthetic evaluation:** [Manual evaluation](#week-6-manual-evaluation) and [synthetic evaluation report](evals/synthetic/EVALUATION_REPORT.md).
+- **Ground Truth:** [Human-review report](evals/ground_truth/HUMAN_REVIEW_REPORT.md).
+- **Monitoring:** [Logfire agent monitoring dashboard](https://logfire-eu.pydantic.dev/xlabs/xlabs-ai-guidestarter-project/dashboards/x-labs-ai-guide-agent-monitoring). Historical verification only; a time-window-specific dashboard snapshot is included under Monitoring, not lifetime totals. Access may require Logfire authentication and project configuration.
+- **Docker, Compose, and Makefile:** [Runtime verification report](docs/BONUS_RUNTIME_VERIFICATION.md), [Dockerfile](Dockerfile), [Compose configuration](compose.yaml), and [Makefile](Makefile).
+
 ## Problem
 
 Learners may know Kubernetes terminology without being able to apply it to a failure scenario. Generic answers can obscure what they understand, what they have not yet checked, and what they should learn next. XLabs focuses on troubleshooting scenarios and gives evidence-based, documentation-grounded feedback rather than a score for the learner.
@@ -62,6 +86,8 @@ uv run pytest -q
 
 The offline checks for `tests/test_tools.py` and `tests/test_agent_instructions.py` passed together in the earlier Step 4B run: **2 passed in 3.25s**. In the later Step 7 verification, the complete Git index was exported with `git checkout-index --all` to a fresh directory outside the repository. In that snapshot, `uv sync --frozen` succeeded and installed 187 packages, then the same two offline tests passed: **2 passed in 4.33s**. The snapshot contained no `.env` file, and OpenAI- and Logfire-named environment variables were removed from the test process. The original repository status, staged manifest, staged diff fingerprint, and tracked worktree diff fingerprint were unchanged. uv warned that hardlinking was unavailable and copied files instead. This verifies installation and offline tests from the exact staged snapshot; Step 7 did not launch the Streamlit app or verify live OpenAI API operation.
 
+The latest verified GitHub Actions run on `main` ran `make test-offline`: **2 tests passed**. The workflow runs offline tests only.
+
 ## Offline retrieval evaluation
 
 The separate retrieval evaluation calls the local `search_docs()` function directly, without invoking the Agent or making OpenAI calls. Its runner is `evals/retrieval/run.py`, its labeled queries are in `evals/retrieval/data/queries.json`, and the saved methodology and results are documented in [the retrieval evaluation report](evals/retrieval/EVALUATION_REPORT.md). Run it with `uv run python -m evals.retrieval.run`.
@@ -110,7 +136,20 @@ The judge runner selects cases with `good` or `bad` human labels from `results_l
 
 ## Monitoring
 
-`agent.py` configures Logfire, instruments the OpenAI client, and records an assessment-session span plus spans for tool calls. The [Logfire agent monitoring dashboard](https://logfire-eu.pydantic.dev/xlabs/xlabs-ai-guidestarter-project/dashboards/x-labs-ai-guide-agent-monitoring) was historically verified on **October 26, 2026**. That verification reported **42 LLM calls**, **2.735 seconds average duration**, **40.04K input tokens**, and **4,919 output tokens**. These are historical figures from that prior dashboard verification, not a new live measurement; they do not establish that a deployment is currently running or that traces are still being collected. Access may require Logfire authentication and project configuration.
+`agent.py` configures Logfire, instruments the OpenAI client, and records an assessment-session span plus spans for tool calls. The [Logfire agent monitoring dashboard](https://logfire-eu.pydantic.dev/xlabs/xlabs-ai-guidestarter-project/dashboards/x-labs-ai-guide-agent-monitoring) was historically verified on **October 26, 2026**. That verification reported **42 LLM calls**, **2.735 seconds average duration**, **40.04K input tokens**, and **4,919 output tokens**. These are historical figures from that prior dashboard verification, not a new live measurement; they do not establish that a deployment is currently running or that traces are still being collected. The screenshot below is a **time-window-specific snapshot, not lifetime totals**. Access may require Logfire authentication and project configuration.
+
+![Logfire agent monitoring dashboard](docs/images/logfire-agent-monitoring.png)
+
+*Logfire dashboard snapshot for its selected time window; these are not lifetime totals.*
+
+## Project files
+
+- `agent.py` — default text Agent, OpenAI Responses API loop, and Logfire tracing; also contains an opt-in experimental Structured Output path not used by the app.
+- `tools.py` — local retrieval index and the `search_docs`, `read_doc`, and `get_scenario` tools.
+- `app.py` — learner-facing Streamlit application.
+- `data/` — Kubernetes documentation records and saved scenarios.
+- `evals/manual/` — scenario runner, human-labeling interface, judge, and saved evaluation data.
+- `tests/` — unit and agent/judge tests.
 
 ## Capstone self-assessment
 
@@ -121,16 +160,8 @@ This is an evidence map against the official capstone areas, not an official sco
 | Problem and user value | Focused problem: help Kubernetes learners separate demonstrated reasoning from misconceptions and unmentioned checks. | Problem and intended use are documented; user outcomes are not independently evaluated here. |
 | Solution and architecture | OpenAI Responses API agent, local Minsearch retrieval, three tools, local knowledge base, and Streamlit interface. | Implemented and documented; cloud deployment is not evidenced. |
 | Data and knowledge base | Local Kubernetes troubleshooting records with source links and saved scenarios. | Included in the repository; source coverage and completeness are not independently audited here. |
-| Testing | Two offline tests passed from the exact staged Git-index snapshot (2 passed in 4.33s after `uv sync --frozen`; 187 packages installed). Other agent/judge tests make API calls. | Step 7 verified snapshot-local dependency installation and offline tests without `.env`; it did not run API-backed tests or launch the app. |
-| Evaluation | 51 scenarios, 25 human-reviewed labels, saved judge output, one remaining disagreement, and the owner-reported 88% → 96% iteration. | Current final result is saved; initial V1 result and original prompt diff are not independently preserved. Reviewer independence is undocumented, and the sample is small and imbalanced. |
-| Monitoring | Logfire spans and the historical dashboard verification with dated call, duration, and token figures. | Instrumentation is implemented; figures are historical, not a current measurement. |
+| Testing | Two offline tests passed from the exact staged Git-index snapshot (2 passed in 4.33s after `uv sync --frozen`; 187 packages installed); the later GitHub Actions run on `main` also passed **2 tests** with `make test-offline`. Other Agent/Judge tests make API calls. | The `main` workflow run verifies the offline Make target; it does not verify API-backed tests or launch the app. |
+| Evaluation | 51 manual scenarios, 25 human-reviewed labels, saved judge output, one remaining disagreement, and the owner-reported 88% → 96% iteration. The Ground Truth review records ten human-approved evaluations against approved criteria, with six Good and four Bad decisions. | The initial V1 result and original prompt diff are not independently preserved. The Ground Truth review was AI-assisted and owner-approved; six cases are synthetic-source and four come from earlier manual evaluation records. Original authorship and whether the set qualifies as “hand-crafted” remain unresolved. The manual sample is small and imbalanced. |
+| Monitoring | Logfire spans, historical dashboard verification with dated call, duration, and token figures, and a time-window-specific dashboard screenshot (not lifetime totals). | Instrumentation is implemented; figures are historical, not a current measurement. The dashboard link may require authentication. |
+| Runtime and developer workflow | Docker and Compose runtime evidence and the offline Make target are recorded in the [runtime verification report](docs/BONUS_RUNTIME_VERIFICATION.md). | B5 Docker, B6 Docker Compose, and B7 Makefile are reported as PASS there; Docker image provenance and the user-reported runtime transcripts remain limitations described in that report. |
 | Reproducibility | The exact staged Git-index snapshot installed from `uv.lock` and passed the two offline tests in a fresh external directory. | Live Streamlit and OpenAI API operation were not verified; API-backed runs require credentials and may incur charges. |
-
-## Project files
-
-- `agent.py` — default text Agent, OpenAI Responses API loop, and Logfire tracing; also contains an opt-in experimental Structured Output path not used by the app.
-- `tools.py` — local retrieval index and the `search_docs`, `read_doc`, and `get_scenario` tools.
-- `app.py` — learner-facing Streamlit application.
-- `data/` — Kubernetes documentation records and saved scenarios.
-- `evals/manual/` — scenario runner, human-labeling interface, judge, and saved evaluation data.
-- `tests/` — unit and agent/judge tests.
