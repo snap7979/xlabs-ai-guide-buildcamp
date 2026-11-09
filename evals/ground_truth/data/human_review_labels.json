@@ -1,0 +1,342 @@
+{
+  "dataset_title": "XLabs AI Guide human-reviewed Ground Truth labels",
+  "schema_version": 1,
+  "review_date": "2026-11-08",
+  "review_method": "Human decision after AI-assisted review",
+  "decision_owner": "Human project owner",
+  "provenance_note": "Labels are final decisions approved by the human project owner after reviewing the saved Agent responses with AI-assisted discussion. AI-assisted analysis notes below are separate from explicit owner rationale and are not attributed to the owner.",
+  "cases": [
+    {
+      "case_id": "debug-running-pods-2",
+      "human_label": "Good",
+      "review_date": "2026-11-08",
+      "review_method": "Human decision after AI-assisted review",
+      "explicit_human_rationale": null,
+      "human_rationale_status": "No separate explicit rationale was provided.",
+      "ai_assisted_assessment_note": "The provisional comparison found that the response credits the log check, rejects the unsupported healthy-Pod conclusion, and recommends Pod status/events and previous logs without asserting a specific root cause.",
+      "initial_copilot_provisional_recommendation": "Good",
+      "ground_truth_case_reference": {
+        "source_file": "evals/ground_truth/data/reviewed_cases.json",
+        "lookup": {
+          "field": "case_id",
+          "value": "debug-running-pods-2"
+        }
+      },
+      "original_case_input_reference": {
+        "source_file": "evals/synthetic/data/generated_cases.json",
+        "lookup": {
+          "field": "case_id",
+          "value": "debug-running-pods-2"
+        }
+      },
+      "saved_agent_response_reference": {
+        "source_file": "evals/synthetic/data/agent_results_current_baseline.json",
+        "lookup": {
+          "field": "case_id",
+          "value": "debug-running-pods-2"
+        },
+        "response_sha256": "31534a912d0d95004bea4ee5648852c4d09bd4f3576c461b69b48279f72ac4c9"
+      }
+    },
+    {
+      "case_id": "debug-services-2",
+      "human_label": "Bad",
+      "review_date": "2026-11-08",
+      "review_method": "Human decision after AI-assisted review",
+      "explicit_human_rationale": "Agent failed to identify the learner's explicit misconception about ignoring Service selectors and labels.",
+      "human_rationale_status": "Explicit rationale provided by the project owner.",
+      "ai_assisted_assessment_note": "The provisional comparison also noted that the response omits the Service-versus-direct-Pod connectivity comparison.",
+      "initial_copilot_provisional_recommendation": "Bad",
+      "ground_truth_case_reference": {
+        "source_file": "evals/ground_truth/data/reviewed_cases.json",
+        "lookup": {
+          "field": "case_id",
+          "value": "debug-services-2"
+        }
+      },
+      "original_case_input_reference": {
+        "source_file": "evals/synthetic/data/generated_cases.json",
+        "lookup": {
+          "field": "case_id",
+          "value": "debug-services-2"
+        }
+      },
+      "saved_agent_response_reference": {
+        "source_file": "evals/synthetic/data/agent_results_current_baseline.json",
+        "lookup": {
+          "field": "case_id",
+          "value": "debug-services-2"
+        },
+        "response_sha256": "78225b0afb9a017a48942f03243a97dc5217986305979350e85fff38855bbac6"
+      }
+    },
+    {
+      "case_id": "dns-services-pods-2",
+      "human_label": "Bad",
+      "review_date": "2026-11-08",
+      "review_method": "Human decision after AI-assisted review",
+      "explicit_human_rationale": "Agent over-credited an unverified DNS diagnosis and did not explain the scope of Kubernetes Service-name resolution.",
+      "human_rationale_status": "Explicit rationale provided by the project owner.",
+      "ai_assisted_assessment_note": "The provisional comparison found that the response flags the namespace claim and recommends DNS checks, but treats the unverified DNS-root-cause inference as demonstrated understanding.",
+      "initial_copilot_provisional_recommendation": "Bad",
+      "ground_truth_case_reference": {
+        "source_file": "evals/ground_truth/data/reviewed_cases.json",
+        "lookup": {
+          "field": "case_id",
+          "value": "dns-services-pods-2"
+        }
+      },
+      "original_case_input_reference": {
+        "source_file": "evals/synthetic/data/generated_cases.json",
+        "lookup": {
+          "field": "case_id",
+          "value": "dns-services-pods-2"
+        }
+      },
+      "saved_agent_response_reference": {
+        "source_file": "evals/synthetic/data/agent_results_current_baseline.json",
+        "lookup": {
+          "field": "case_id",
+          "value": "dns-services-pods-2"
+        },
+        "response_sha256": "275c3057381245be1beb754b6a6bd13dc8a536ed79ba25a941f8f7b4fbc3edb1"
+      }
+    },
+    {
+      "case_id": "debug-running-pods-1",
+      "human_label": "Good",
+      "review_date": "2026-11-08",
+      "review_method": "Human decision after AI-assisted review",
+      "explicit_human_rationale": null,
+      "human_rationale_status": "No separate explicit rationale was provided; the project owner approved Good despite the initial provisional Bad recommendation.",
+      "ai_assisted_assessment_note": "The provisional comparison noted that the Agent credits status/events and recommends previous logs, but incorrectly says logs were not discussed despite the learner's conditional mention and does not qualify exec for a restart loop.",
+      "initial_copilot_provisional_recommendation": "Bad",
+      "ground_truth_case_reference": {
+        "source_file": "evals/ground_truth/data/reviewed_cases.json",
+        "lookup": {
+          "field": "case_id",
+          "value": "debug-running-pods-1"
+        }
+      },
+      "original_case_input_reference": {
+        "source_file": "evals/synthetic/data/generated_cases.json",
+        "lookup": {
+          "field": "case_id",
+          "value": "debug-running-pods-1"
+        }
+      },
+      "saved_agent_response_reference": {
+        "source_file": "evals/synthetic/data/agent_results_current_baseline.json",
+        "lookup": {
+          "field": "case_id",
+          "value": "debug-running-pods-1"
+        },
+        "response_sha256": "51eca47ac675f5f28640ae83087174cb9a4e6aaf879abe3685c9a2502bb65a27"
+      }
+    },
+    {
+      "case_id": "manual-scenarios-row-33",
+      "human_label": "Good",
+      "review_date": "2026-11-08",
+      "review_method": "Human decision after AI-assisted review",
+      "explicit_human_rationale": null,
+      "human_rationale_status": "No separate explicit rationale was provided; the project owner approved Good despite the initial provisional Bad recommendation.",
+      "ai_assisted_assessment_note": "The provisional comparison found that the response flags the Running-means-healthy claim and recommends events/logs, but omits an explicit Running-versus-Ready distinction and readiness checks. The stored Pod summary also lacks those details.",
+      "initial_copilot_provisional_recommendation": "Bad",
+      "ground_truth_case_reference": {
+        "source_file": "evals/ground_truth/data/reviewed_cases.json",
+        "lookup": {
+          "field": "case_id",
+          "value": "manual-scenarios-row-33"
+        }
+      },
+      "original_case_input_reference": {
+        "source_file": "evals/manual/data/scenarios.csv",
+        "lookup": {
+          "field": "row_number_1based",
+          "value": 33
+        },
+        "question": "A Pod is Running but unhealthy. The learner claims Running always means the application is healthy. Assess this reasoning."
+      },
+      "saved_agent_response_reference": {
+        "source_file": "evals/manual/data/results.json",
+        "lookup": {
+          "field": "record_index_1based",
+          "value": 33
+        },
+        "input_field": "input.question",
+        "input_value": "A Pod is Running but unhealthy. The learner claims Running always means the application is healthy. Assess this reasoning.",
+        "response_sha256": "62e3ff2712860edd918a8cf2cceeeda0a836c4cea5c7629e3b1c7d06e62ba34f"
+      }
+    },
+    {
+      "case_id": "debug-services-1",
+      "human_label": "Bad",
+      "review_date": "2026-11-08",
+      "review_method": "Human decision after AI-assisted review",
+      "explicit_human_rationale": "Agent failed to credit the learner's port comparison and direct Pod-IP test, and redirected troubleshooting toward DNS without sufficient evidence.",
+      "human_rationale_status": "Explicit rationale provided by the project owner.",
+      "ai_assisted_assessment_note": "The provisional comparison similarly noted that selector/label and endpoint checks were credited, while the port comparison and direct Pod-IP test were omitted and DNS was introduced without support.",
+      "initial_copilot_provisional_recommendation": "Bad",
+      "ground_truth_case_reference": {
+        "source_file": "evals/ground_truth/data/reviewed_cases.json",
+        "lookup": {
+          "field": "case_id",
+          "value": "debug-services-1"
+        }
+      },
+      "original_case_input_reference": {
+        "source_file": "evals/synthetic/data/generated_cases.json",
+        "lookup": {
+          "field": "case_id",
+          "value": "debug-services-1"
+        }
+      },
+      "saved_agent_response_reference": {
+        "source_file": "evals/synthetic/data/agent_results_current_baseline.json",
+        "lookup": {
+          "field": "case_id",
+          "value": "debug-services-1"
+        },
+        "response_sha256": "d41d6c8bbc9a8f990b5384317be368eade07e0a511b6e74dbd233ed4899ddb85"
+      }
+    },
+    {
+      "case_id": "manual-scenarios-row-30",
+      "human_label": "Bad",
+      "review_date": "2026-11-08",
+      "review_method": "Human decision after AI-assisted review",
+      "explicit_human_rationale": "Agent credited the learner with identifying missing endpoints, although that information appeared only in the scenario.",
+      "human_rationale_status": "Explicit rationale provided by the project owner.",
+      "ai_assisted_assessment_note": "The provisional comparison found that the response correctly rejects the immediate node restart and recommends selector/endpoint checks, but credits the learner with a scenario fact and does not clearly call for target-Pod inspection.",
+      "initial_copilot_provisional_recommendation": "Bad",
+      "ground_truth_case_reference": {
+        "source_file": "evals/ground_truth/data/reviewed_cases.json",
+        "lookup": {
+          "field": "case_id",
+          "value": "manual-scenarios-row-30"
+        }
+      },
+      "original_case_input_reference": {
+        "source_file": "evals/manual/data/scenarios.csv",
+        "lookup": {
+          "field": "row_number_1based",
+          "value": 30
+        },
+        "question": "A Service has no endpoints. The learner says: I would restart every node immediately. Assess this reasoning."
+      },
+      "saved_agent_response_reference": {
+        "source_file": "evals/manual/data/results.json",
+        "lookup": {
+          "field": "record_index_1based",
+          "value": 30
+        },
+        "input_field": "input.question",
+        "input_value": "A Service has no endpoints. The learner says: I would restart every node immediately. Assess this reasoning.",
+        "response_sha256": "86923b15bd8c4f08a10b89c86545897cb4d8938dc5549ea28faa93508483dfcf"
+      }
+    },
+    {
+      "case_id": "manual-scenarios-row-31",
+      "human_label": "Good",
+      "review_date": "2026-11-08",
+      "review_method": "Human decision after AI-assisted review",
+      "explicit_human_rationale": null,
+      "human_rationale_status": "No separate explicit rationale was provided.",
+      "ai_assisted_assessment_note": "The provisional comparison found that the response credits selector inspection, flags the targetPort misconception, and recommends endpoint and port checks, but does not explicitly explain the distinction between Service port and targetPort.",
+      "initial_copilot_provisional_recommendation": "Good",
+      "ground_truth_case_reference": {
+        "source_file": "evals/ground_truth/data/reviewed_cases.json",
+        "lookup": {
+          "field": "case_id",
+          "value": "manual-scenarios-row-31"
+        }
+      },
+      "original_case_input_reference": {
+        "source_file": "evals/manual/data/scenarios.csv",
+        "lookup": {
+          "field": "row_number_1based",
+          "value": 31
+        },
+        "question": "A Service cannot reach its Pods. The learner checks selectors correctly but incorrectly claims targetPort never matters. Assess this reasoning."
+      },
+      "saved_agent_response_reference": {
+        "source_file": "evals/manual/data/results.json",
+        "lookup": {
+          "field": "record_index_1based",
+          "value": 31
+        },
+        "input_field": "input.question",
+        "input_value": "A Service cannot reach its Pods. The learner checks selectors correctly but incorrectly claims targetPort never matters. Assess this reasoning.",
+        "response_sha256": "47525962b6991152f1bc957d0208ac64f303fa057aa3e2a5843eaa920185e9ae"
+      }
+    },
+    {
+      "case_id": "manual-scenarios-row-36",
+      "human_label": "Good",
+      "review_date": "2026-11-08",
+      "review_method": "Human decision after AI-assisted review",
+      "explicit_human_rationale": null,
+      "human_rationale_status": "No separate detailed rationale was provided; the project owner approved Good despite the initial provisional Bad recommendation.",
+      "ai_assisted_assessment_note": "The provisional comparison found that the response recommends Pod-level lookup and resolv.conf inspection, but labels the limited port-only diagnosis a misconception and does not explain the DNS symptom. The stored DNS summary does not detail namespace search behavior.",
+      "initial_copilot_provisional_recommendation": "Bad",
+      "ground_truth_case_reference": {
+        "source_file": "evals/ground_truth/data/reviewed_cases.json",
+        "lookup": {
+          "field": "case_id",
+          "value": "manual-scenarios-row-36"
+        }
+      },
+      "original_case_input_reference": {
+        "source_file": "evals/manual/data/scenarios.csv",
+        "lookup": {
+          "field": "row_number_1based",
+          "value": 36
+        },
+        "question": "DNS fails but direct IP connectivity works. The learner proposes checking only the Service port. Assess this reasoning."
+      },
+      "saved_agent_response_reference": {
+        "source_file": "evals/manual/data/results.json",
+        "lookup": {
+          "field": "record_index_1based",
+          "value": 36
+        },
+        "input_field": "input.question",
+        "input_value": "DNS fails but direct IP connectivity works. The learner proposes checking only the Service port. Assess this reasoning.",
+        "response_sha256": "a9422c89e945688e8a4570ffb6b0adab04c9afd4fea46b457f887226125d0a27"
+      }
+    },
+    {
+      "case_id": "dns-services-pods-1",
+      "human_label": "Good",
+      "review_date": "2026-11-08",
+      "review_method": "Human decision after AI-assisted review",
+      "explicit_human_rationale": null,
+      "human_rationale_status": "No separate explicit rationale was provided.",
+      "ai_assisted_assessment_note": "The provisional comparison found that the response credits Pod-level DNS lookup, resolv.conf, DNS Pods, and DNS logs, and recommends checking Service endpoints without asserting a definitive DNS cause.",
+      "initial_copilot_provisional_recommendation": "Good",
+      "ground_truth_case_reference": {
+        "source_file": "evals/ground_truth/data/reviewed_cases.json",
+        "lookup": {
+          "field": "case_id",
+          "value": "dns-services-pods-1"
+        }
+      },
+      "original_case_input_reference": {
+        "source_file": "evals/synthetic/data/generated_cases.json",
+        "lookup": {
+          "field": "case_id",
+          "value": "dns-services-pods-1"
+        }
+      },
+      "saved_agent_response_reference": {
+        "source_file": "evals/synthetic/data/agent_results_current_baseline.json",
+        "lookup": {
+          "field": "case_id",
+          "value": "dns-services-pods-1"
+        },
+        "response_sha256": "e10389442c0eb83661d83651ce4cae30f46a197b22e299e7e9afd2608ee2d55b"
+      }
+    }
+  ]
+}

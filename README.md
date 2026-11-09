@@ -23,6 +23,8 @@ Learner
 
 The knowledge base is stored locally in `data/kubernetes_troubleshooting_docs.json` and `data/kubernetes_scenarios.json`. `tools.py` builds a Minsearch index over the documentation records and implements the three tools exposed to the agent. The model is instructed to distinguish scenario facts from the learner's own reasoning and to ground technical guidance in retrieved documentation.
 
+The Streamlit app calls `agent()` without enabling structured output, so its production-facing assessment is text-based. `agent.py` also contains an opt-in Structured Output path (`structured_output=True`); it is experimental and is not used by the app. The separate PydanticAI and structured-capture experiments are not part of the app's submission behavior.
+
 The included [Streamlit screenshot](xlabs-ai-guide-streamlit-assessment.png) shows the assessment interface. This is a local application; no cloud deployment is claimed.
 
 ## Setup and run
@@ -46,18 +48,25 @@ Choose a Service Connectivity, Pod Troubleshooting, or DNS Resolution scenario, 
 
 ## Testing
 
-The offline unit test checks that `get_scenario` returns the expected saved scenario from local data. Run it, the Agent test, the Agent + LLM Judge test, or all tests with:
+The offline tests check that `get_scenario` returns the expected saved scenario from local data and that the Agent assembles its instructions correctly with a fake client. Run those checks, the API-backed Agent test, the Agent + LLM Judge test, or all tests with:
 
 ```bash
 uv run pytest -q tests/test_tools.py
+uv run pytest -q tests/test_agent_instructions.py
 uv run pytest -q tests/test_agent.py
 uv run pytest -q tests/test_judge.py
 uv run pytest -q
 ```
 
-`test_tools.py` only uses local data and does not require an API key or network access. `test_agent.py` and `test_judge.py` call the OpenAI API, so they require a valid `OPENAI_API_KEY` and network access and may incur paid API charges. The full test command includes those API-backed tests and has the same requirements.
+`test_tools.py` only uses local data, and `test_agent_instructions.py` uses a fake Responses client; both avoid API calls and do not require an API key or network access. `test_agent.py` and `test_judge.py` call the OpenAI API, so they require a valid `OPENAI_API_KEY` and network access and may incur paid API charges. The full test command includes those API-backed tests and has the same requirements.
 
-The offline test passed in the current environment: **1 passed in 1.62s**. pandas and pydantic are declared as direct dependencies in `pyproject.toml`, and `uv.lock` has been updated; `uv sync --locked` succeeded in the current environment. These results verify the current checkout, not a clean-environment installation.
+The offline checks for `tests/test_tools.py` and `tests/test_agent_instructions.py` passed together in the earlier Step 4B run: **2 passed in 3.25s**. In the later Step 7 verification, the complete Git index was exported with `git checkout-index --all` to a fresh directory outside the repository. In that snapshot, `uv sync --frozen` succeeded and installed 187 packages, then the same two offline tests passed: **2 passed in 4.33s**. The snapshot contained no `.env` file, and OpenAI- and Logfire-named environment variables were removed from the test process. The original repository status, staged manifest, staged diff fingerprint, and tracked worktree diff fingerprint were unchanged. uv warned that hardlinking was unavailable and copied files instead. This verifies installation and offline tests from the exact staged snapshot; Step 7 did not launch the Streamlit app or verify live OpenAI API operation.
+
+## Offline retrieval evaluation
+
+The separate retrieval evaluation calls the local `search_docs()` function directly, without invoking the Agent or making OpenAI calls. Its runner is `evals/retrieval/run.py`, its labeled queries are in `evals/retrieval/data/queries.json`, and the saved methodology and results are documented in [the retrieval evaluation report](evals/retrieval/EVALUATION_REPORT.md). Run it with `uv run python -m evals.retrieval.run`.
+
+The documented baseline is **2/3 Top-1 (66.7%) across three queries**. The Service-routing query is the miss: `debug-services` ranks third rather than first. The report also includes two exploratory Service-query reformulations, separate from the baseline metric. This small corpus and query set do not establish broad retrieval quality or paraphrase robustness.
 
 ## Week 6 manual evaluation
 
@@ -112,14 +121,14 @@ This is an evidence map against the official capstone areas, not an official sco
 | Problem and user value | Focused problem: help Kubernetes learners separate demonstrated reasoning from misconceptions and unmentioned checks. | Problem and intended use are documented; user outcomes are not independently evaluated here. |
 | Solution and architecture | OpenAI Responses API agent, local Minsearch retrieval, three tools, local knowledge base, and Streamlit interface. | Implemented and documented; cloud deployment is not evidenced. |
 | Data and knowledge base | Local Kubernetes troubleshooting records with source links and saved scenarios. | Included in the repository; source coverage and completeness are not independently audited here. |
-| Testing | Isolated offline scenario-retrieval test passed (1 passed in 1.62s); `uv sync --locked` succeeded. Other agent/judge tests make API calls. | pandas and pydantic are direct dependencies and the lock is synchronized. These checks passed in the current environment; clean-environment reproduction is not verified. |
+| Testing | Two offline tests passed from the exact staged Git-index snapshot (2 passed in 4.33s after `uv sync --frozen`; 187 packages installed). Other agent/judge tests make API calls. | Step 7 verified snapshot-local dependency installation and offline tests without `.env`; it did not run API-backed tests or launch the app. |
 | Evaluation | 51 scenarios, 25 human-reviewed labels, saved judge output, one remaining disagreement, and the owner-reported 88% → 96% iteration. | Current final result is saved; initial V1 result and original prompt diff are not independently preserved. Reviewer independence is undocumented, and the sample is small and imbalanced. |
 | Monitoring | Logfire spans and the historical dashboard verification with dated call, duration, and token figures. | Instrumentation is implemented; figures are historical, not a current measurement. |
-| Reproducibility | Setup, run, and evaluation commands are documented. | Not verified from a clean environment; API-backed runs require credentials and may incur charges. |
+| Reproducibility | The exact staged Git-index snapshot installed from `uv.lock` and passed the two offline tests in a fresh external directory. | Live Streamlit and OpenAI API operation were not verified; API-backed runs require credentials and may incur charges. |
 
 ## Project files
 
-- `agent.py` — agent instructions, OpenAI Responses API loop, and Logfire tracing.
+- `agent.py` — default text Agent, OpenAI Responses API loop, and Logfire tracing; also contains an opt-in experimental Structured Output path not used by the app.
 - `tools.py` — local retrieval index and the `search_docs`, `read_doc`, and `get_scenario` tools.
 - `app.py` — learner-facing Streamlit application.
 - `data/` — Kubernetes documentation records and saved scenarios.
